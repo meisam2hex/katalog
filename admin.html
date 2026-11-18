@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پنل مدیریت آنلاین کاتالوگ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen bg-stone-50 text-stone-800 p-4">
+
+  <!-- صفحه ورود با رمز عبور -->
+  <div id="loginBox" class="max-w-sm mx-auto mt-16 bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
+    <div class="text-center space-y-1">
+      <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
+      <h1 class="font-extrabold text-base text-stone-900">ورود به مدیریت کاتالوگ</h1>
+      <p class="text-xs text-stone-500">برای تغییر تنظیمات یا افزودن محصول رمز عبور را وارد کنید</p>
+    </div>
+
+    <div class="space-y-3">
+      <input id="adminPasswordInput" type="password" placeholder="رمز عبور مدیریت..." class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-center focus:outline-none focus:border-rose-500" />
+      <button onclick="unlockAdmin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-3 rounded-xl transition">
+        ورود به پنل
+      </button>
+      <a href="index.html" class="block text-center text-[11px] text-stone-400 hover:text-stone-600 pt-1">← بازگشت به فروشگاه</a>
+    </div>
+  </div>
+
+  <!-- داشبورد اصلی مدیریت -->
+  <div id="adminDashboard" class="max-w-xl mx-auto space-y-4 hidden pb-12">
+    <div class="flex items-center justify-between bg-white px-4 py-3 rounded-2xl border border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="font-extrabold text-sm text-stone-800">⚙️ مدیریت آنلاین فروشگاه</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="text-xs bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg font-medium">مشاهده کاتالوگ</a>
+        <button onclick="logoutAdmin()" class="text-xs text-rose-600 px-2 py-1.5 font-medium">خروج</button>
+      </div>
+    </div>
+
+    <!-- تب‌های جابه‌جایی -->
+    <div class="grid grid-cols-2 bg-stone-200/70 p-1 rounded-xl">
+      <button id="tabBtnProduct" onclick="switchTab('product')" class="py-2 text-xs font-bold rounded-lg bg-white text-rose-600 shadow-2xs">
+        ➕ افزودن محصول جدید
+      </button>
+      <button id="tabBtnConfig" onclick="switchTab('config')" class="py-2 text-xs font-bold rounded-lg text-stone-600">
+        🏪 تنظیمات لوگو، مهر و ورکر
+      </button>
+    </div>
+
+    <!-- بخش ۱: فرم افزودن محصول مستقیم به گوگل شیت -->
+    <div id="panelProduct" class="bg-white p-5 rounded-3xl border border-stone-200 space-y-3 text-xs">
+      <h2 class="font-bold text-sm text-stone-800 border-b border-stone-100 pb-2">ثبت کالای جدید در گوگل شیت</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">نام محصول *</label>
+          <input id="pName" type="text" placeholder="مثلاً: سرم نیاسینامید اوردینری" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">برند</label>
+          <input id="pBrand" type="text" placeholder="مثلاً: The Ordinary" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">دسته‌بندی</label>
+          <input id="pCategory" type="text" placeholder="مراقبت پوست" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">تاریخ انقضا (اختیاری)</label>
+          <input id="pExpiry" type="text" dir="ltr" placeholder="2028/04" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2.5">
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">قیمت تک (تومان) *</label>
+          <input id="pRetail" type="number" placeholder="650000" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">قیمت عمده (تومان) *</label>
+          <input id="pWholesale" type="number" placeholder="490000" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">حداقل عمده</label>
+          <input id="pMoq" type="number" value="6" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-bold text-stone-600 mb-1">لینک عکس یا مسیر در گیت‌هاب</label>
+        <input id="pImage" type="text" dir="ltr" placeholder="images/101.jpg یا https://..." class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+      </div>
+
+      <button id="btnAddProduct" onclick="submitNewProduct()" class="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md shadow-rose-100 transition">
+        🚀 ثبت آنلاین محصول در کاتالوگ
+      </button>
+    </div>
+
+    <!-- بخش ۲: تنظیمات آنلاین فروشگاه -->
+    <div id="panelConfig" class="bg-white p-5 rounded-3xl border border-stone-200 space-y-3 text-xs hidden">
+      <h2 class="font-bold text-sm text-stone-800 border-b border-stone-100 pb-2">تنظیمات عمومی فروشگاه و فاکتور</h2>
+
+      <div>
+        <label class="block font-bold text-stone-600 mb-1">نام فروشگاه</label>
+        <input id="cfgStoreName" type="text" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+      </div>
+
+      <div>
+        <label class="block font-bold text-stone-600 mb-1">متن پایین فاکتور (شماره کارت / آدرس)</label>
+        <input id="cfgFooterNote" type="text" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+      </div>
+
+      <div>
+        <label class="block font-bold text-stone-600 mb-1">آدرس Cloudflare Worker (ارسال فاکتور به تلگرام)</label>
+        <input id="cfgWorkerUrl" type="url" dir="ltr" placeholder="https://invoice-bot.xxxx.workers.dev" class="w-full border border-stone-200 rounded-xl px-3 py-2" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <div class="border border-stone-200 rounded-xl p-3 text-center space-y-1.5">
+          <span class="block font-bold text-stone-700">لوگوی فروشگاه</span>
+          <img id="admPreviewLogo" src="" class="h-14 mx-auto object-contain hidden" />
+          <input type="file" accept="image/*" onchange="compressAndStoreImage(event, 'logo')" class="w-full text-[10px]" />
+        </div>
+        <div class="border border-stone-200 rounded-xl p-3 text-center space-y-1.5">
+          <span class="block font-bold text-stone-700">مهر / امضای مغازه</span>
+          <img id="admPreviewStamp" src="" class="h-14 mx-auto object-contain hidden" />
+          <input type="file" accept="image/*" onchange="compressAndStoreImage(event, 'stamp')" class="w-full text-[10px]" />
+        </div>
+      </div>
+
+      <button id="btnSaveConfig" onclick="submitOnlineConfig()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-100 transition">
+        💾 ذخیره آنلاین تنظیمات برای همه مشتریان
+      </button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let adminPass = sessionStorage.getItem('katalog_admin_pass') || '';
+    let liveConfig = { ...(window.DEFAULT_CONFIG || {}) };
+
+    if (adminPass) {
+      showDashboard();
+    }
+
+    function unlockAdmin() {
+      const val = document.getElementById('adminPasswordInput').value.trim();
+      if (!val) return alert('لطفاً رمز عبور را وارد کنید.');
+      adminPass = val;
+      sessionStorage.setItem('katalog_admin_pass', val);
+      showDashboard();
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('katalog_admin_pass');
+      location.reload();
+    }
+
+    async function showDashboard() {
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('hidden');
+
+      const endpoint = (window.APP_ENDPOINT?.appsScriptUrl || '').trim();
+      if (!endpoint) {
+        alert('هشدار: لینک Web App گوگل اسکریپت هنوز در فایل config.js تنظیم نشده است.');
+        return;
+      }
+
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        if (data.ok && data.config) {
+          liveConfig = { ...liveConfig, ...data.config };
+        }
+      } catch (e) {}
+
+      document.getElementById('cfgStoreName').value = liveConfig.storeName || '';
+      document.getElementById('cfgFooterNote').value = liveConfig.footerNote || '';
+      document.getElementById('cfgWorkerUrl').value = liveConfig.workerUrl || '';
+      if (liveConfig.logoBase64) {
+        document.getElementById('admPreviewLogo').src = liveConfig.logoBase64;
+        document.getElementById('admPreviewLogo').classList.remove('hidden');
+      }
+      if (liveConfig.stampBase64) {
+        document.getElementById('admPreviewStamp').src = liveConfig.stampBase64;
+        document.getElementById('admPreviewStamp').classList.remove('hidden');
+      }
+    }
+
+    function switchTab(tab) {
+      const isProd = tab === 'product';
+      document.getElementById('panelProduct').classList.toggle('hidden', !isProd);
+      document.getElementById('panelConfig').classList.toggle('hidden', isProd);
+      document.getElementById('tabBtnProduct').className = isProd
+        ? 'py-2 text-xs font-bold rounded-lg bg-white text-rose-600 shadow-2xs'
+        : 'py-2 text-xs font-bold rounded-lg text-stone-600';
+      document.getElementById('tabBtnConfig').className = !isProd
+        ? 'py-2 text-xs font-bold rounded-lg bg-white text-rose-600 shadow-2xs'
+        : 'py-2 text-xs font-bold rounded-lg text-stone-600';
+    }
+
+    // فشرده‌سازی خودکار لوگو و مهر تا در سلول گوگل شیت (سقف 50,000 کاراکتر) بدون خطا ذخیره شوند
+    function compressAndStoreImage(event, type) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 220;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/png', 0.85);
+
+          if (type === 'logo') {
+            liveConfig.logoBase64 = dataUrl;
+            document.getElementById('admPreviewLogo').src = dataUrl;
+            document.getElementById('admPreviewLogo').classList.remove('hidden');
+          } else {
+            liveConfig.stampBase64 = dataUrl;
+            document.getElementById('admPreviewStamp').src = dataUrl;
+            document.getElementById('admPreviewStamp').classList.remove('hidden');
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function postToAppsScript(payload, btnId) {
+      const endpoint = (window.APP_ENDPOINT?.appsScriptUrl || '').trim();
+      if (!endpoint) return alert('لینک Web App در config.js تنظیم نشده است.');
+
+      const btn = document.getElementById(btnId);
+      const oldText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = '⏳ در حال ارسال به گوگل شیت...';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ ...payload, password: adminPass })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          alert('✅ ' + data.message);
+          return true;
+        } else {
+          alert('❌ خطا: ' + (data.error || 'عملیات ناموفق بود'));
+          if (data.error && data.error.includes('رمز')) logoutAdmin();
+          return false;
+        }
+      } catch (err) {
+        alert('❌ خطا در ارتباط با گوگل اسکریپت: ' + err.message);
+        return false;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = oldText;
+      }
+    }
+
+    async function submitOnlineConfig() {
+      liveConfig.storeName = document.getElementById('cfgStoreName').value.trim() || 'فروشگاه آرایشی';
+      liveConfig.footerNote = document.getElementById('cfgFooterNote').value.trim();
+      liveConfig.workerUrl = document.getElementById('cfgWorkerUrl').value.trim();
+      await postToAppsScript({ action: 'saveConfig', config: liveConfig }, 'btnSaveConfig');
+    }
+
+    async function submitNewProduct() {
+      const product = {
+        name: document.getElementById('pName').value.trim(),
+        brand: document.getElementById('pBrand').value.trim(),
+        category: document.getElementById('pCategory').value.trim() || 'عمومی',
+        retailPrice: document.getElementById('pRetail').value.trim(),
+        wholesalePrice: document.getElementById('pWholesale').value.trim(),
+        moq: document.getElementById('pMoq').value.trim() || '1',
+        image: document.getElementById('pImage').value.trim(),
+        expiryDate: document.getElementById('pExpiry').value.trim()
+      };
+
+      if (!product.name || !product.retailPrice || !product.wholesalePrice) {
+        return alert('لطفاً نام محصول، قیمت تک و قیمت عمده را وارد کنید.');
+      }
+
+      const ok = await postToAppsScript({ action: 'addProduct', product }, 'btnAddProduct');
+      if (ok) {
+        document.getElementById('pName').value = '';
+        document.getElementById('pRetail').value = '';
+        document.getElementById('pWholesale').value = '';
+        document.getElementById('pImage').value = '';
+        document.getElementById('pExpiry').value = '';
+      }
+    }
+  </script>
+</body>
+</html>
